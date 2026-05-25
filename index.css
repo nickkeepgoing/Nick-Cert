@@ -1080,9 +1080,13 @@ input[type="checkbox"] {
 }
 
 @media (max-width: 768px) {
+  .btn, .input {
+    min-height: 44px;
+  }
+
   .dashboard-layout {
     grid-template-columns: 1fr;
-    padding-bottom: var(--mobile-nav-height);
+    padding-bottom: calc(var(--mobile-nav-height) + env(safe-area-inset-bottom, 0px) + 20px);
   }
   
   .sidebar {
@@ -1090,7 +1094,7 @@ input[type="checkbox"] {
   }
   
   .main-content {
-    padding: 24px 20px;
+    padding: 20px 16px;
   }
   
   .top-nav-bar {
@@ -1099,8 +1103,8 @@ input[type="checkbox"] {
   
   .stats-grid {
     grid-template-columns: 1fr;
-    gap: 16px;
-    margin-bottom: 24px;
+    gap: 12px;
+    margin-bottom: 20px;
   }
   
   .welcome-card {
@@ -1112,31 +1116,61 @@ input[type="checkbox"] {
   
   .overview-grid {
     grid-template-columns: 1fr;
-    gap: 24px;
+    gap: 20px;
   }
   
   .form-row {
     grid-template-columns: 1fr;
     gap: 16px;
   }
+
+  /* Bottom sheet modal styling for iOS/Android native feel */
+  .modal {
+    align-items: flex-end;
+    padding: 0;
+  }
+  
+  .modal-inner {
+    border-radius: 20px 20px 0 0;
+    max-height: 85vh;
+    width: 100%;
+    animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .modal-inner::before {
+    content: "";
+    display: block;
+    width: 36px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 2px;
+    margin: 12px auto 0;
+  }
   
   .modal-content-grid {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 16px;
   }
   
   .preview-iframe {
-    height: 350px;
+    height: 320px;
+  }
+
+  .auth-card {
+    padding: 28px 20px;
+    border-radius: var(--radius-lg);
   }
   
-  /* Mobile Bottom Navigation Bar */
+  /* Mobile Bottom Navigation Bar with iOS safe-area handling */
   .mobile-bottom-nav {
     display: flex;
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    height: var(--mobile-nav-height);
+    height: calc(var(--mobile-nav-height) + env(safe-area-inset-bottom, 0px));
+    padding-bottom: env(safe-area-inset-bottom, 0px);
     background: rgba(11, 13, 17, 0.85);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
@@ -1174,4 +1208,9 @@ input[type="checkbox"] {
   .mobile-nav-icon {
     font-size: 18px;
   }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
 }
