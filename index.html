@@ -482,6 +482,36 @@
       });
   }
 
+  function renderPdfFull(url, container) {
+    if (!window.pdfjsLib) return;
+    
+    container.innerHTML = '<div style="padding: 40px; color: var(--text-secondary); text-align: center; font-size: 13px;">' +
+      '<div class="spinner" style="margin-bottom: 12px; font-size: 24px;">⌛</div>Loading certificate preview...</div>';
+    
+    window.pdfjsLib.getDocument(url).promise
+      .then(function(pdf) { return pdf.getPage(1); })
+      .then(function(page) {
+        var viewport = page.getViewport({ scale: 2.0 });
+        var canvas = document.createElement('canvas');
+        canvas.className = 'preview-large';
+        var ctx = canvas.getContext('2d');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        
+        container.innerHTML = '';
+        container.appendChild(canvas);
+        
+        return page.render({ canvasContext: ctx, viewport: viewport }).promise;
+      })
+      .catch(function(err) {
+        container.innerHTML = '<div style="padding:40px; text-align:center; color: var(--text-secondary);">' +
+          '<div style="font-size:3rem; margin-bottom:10px;">⚠️</div>' +
+          '<div>Failed to load PDF preview</div>' +
+          '<div style="font-size:11px; color:var(--text-muted); margin-top:10px;">' + escapeHtml(err.message) + '</div>' +
+        '</div>';
+      });
+  }
+
   function downloadFile(url, filename) {
     var btn = $('btnDownload');
     var oldText = btn.textContent;
@@ -688,14 +718,21 @@
     if (!c) return;
     var url = getPublicUrl(c.file_path);
     var isImg = c.file_type && c.file_type.indexOf('image/') === 0;
-    var preview = isImg ? '<img src="' + url + '" class="preview-large">' : '<iframe src="' + url + '#toolbar=0" class="preview-iframe"></iframe>';
+    var isPdf = c.file_type === 'application/pdf' || (c.file_name && c.file_name.toLowerCase().endsWith('.pdf'));
 
     $('modalTitle').textContent = c.title;
-    $('modalBody').innerHTML = preview;
     $('detIssuer').textContent = c.issuer || 'N/A';
     $('detDate').textContent = c.issued_date ? formatDate(c.issued_date) : 'N/A';
     $('detCat').textContent = c.category || 'Unclassified';
     $('detFile').textContent = c.file_name;
+
+    if (isImg) {
+      $('modalBody').innerHTML = '<img src="' + url + '" class="preview-large">';
+    } else if (isPdf) {
+      renderPdfFull(url, $('modalBody'));
+    } else {
+      $('modalBody').innerHTML = '<div style="font-size:5rem; padding:40px;">📄</div>';
+    }
 
     $('modal').classList.add('open');
 

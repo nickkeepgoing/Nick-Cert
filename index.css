@@ -952,18 +952,14 @@ input[type="checkbox"] {
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  max-height: 480px;
+  overflow-y: auto;
+  display: block;
+  max-height: 520px;
 }
 
 .preview-large {
   width: 100%;
   height: auto;
-  max-height: 480px;
-  object-fit: contain;
   display: block;
 }
 
@@ -1070,6 +1066,16 @@ input[type="checkbox"] {
 @keyframes modalScaleUp {
   from { opacity: 0; transform: scale(0.95); }
   to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.spinner {
+  display: inline-block;
+  animation: spin 2s linear infinite;
 }
 
 /* ============ RESPONSIVE LAYOUTS ============ */
