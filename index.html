@@ -150,16 +150,26 @@
             <div class="section-box-title">
               <span>Quick Actions</span>
             </div>
-            <div style="display: flex; flex-direction: column; gap: 12px;">
-              <div class="quick-upload-card" onclick="switchTab('ingest')">
-                <div class="quick-upload-icon">📤</div>
-                <div class="quick-upload-text">Upload Certificate</div>
-                <div class="quick-upload-hint">Ingest new credentials</div>
+            <div class="action-cards-container">
+              <!-- Add New Certificate -->
+              <div class="action-card" onclick="switchTab('ingest')">
+                <div class="action-icon">📤</div>
+                <div class="action-title">Add New Certificate</div>
+                <div class="action-desc">Upload a new credential, add metadata, and generate a verification link.</div>
               </div>
-              <div class="quick-upload-card" id="quickShareBtn" style="border-color: rgba(99, 102, 241, 0.25);">
-                <div class="quick-upload-icon" style="color: var(--accent);">🔗</div>
-                <div class="quick-upload-text">Share Portfolio (HTML)</div>
-                <div class="quick-upload-hint">Generate explanations & export</div>
+
+              <!-- Share Portfolio -->
+              <div class="action-card" id="quickShareBtn">
+                <div class="action-icon">🔗</div>
+                <div class="action-title">Share Portfolio</div>
+                <div class="action-desc">Copy your public portfolio link or generate a QR code for resumes.</div>
+              </div>
+
+              <!-- Export Data -->
+              <div class="action-card" onclick="exportToCSV()">
+                <div class="action-icon">󰒕</div>
+                <div class="action-title">Export Data</div>
+                <div class="action-desc">Export your certificate registry as a JSON or CSV file.</div>
               </div>
             </div>
             <div style="margin-top: 16px; font-size: 12px; color: var(--text-secondary); line-height: 1.6;">
