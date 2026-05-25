@@ -412,6 +412,7 @@
         try {
           store.setItem('cv_url', url);
           store.setItem('cv_key', key);
+          store.setItem('cv_email', email);
           sessionStorage.setItem('cv_token', res.data.session.access_token);
         } catch(e) {}
 
@@ -741,11 +742,49 @@
       navigator.clipboard.writeText(url).then(function() { showToast('Link copied to clipboard'); }).catch(function() { showToast(url); });
     };
     $('btnDel').onclick = function() {
-      if (!confirm('Are you sure you want to permanently purge this record?')) return;
-      sb.storage.from(BUCKET).remove([c.file_path])
-        .then(function() { return sb.from('certs').delete().eq('id', c.id); })
-        .then(function() { closeModal(); showToast('Record purged'); loadCerts(); })
-        .catch(function(e) { showToast(e.message, true); });
+      var pw = prompt('To purge this record, please enter your security password:');
+      if (!pw) return;
+
+      var btn = $('btnDel');
+      var oldText = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = 'Verifying...';
+
+      // Re-authenticate to verify password
+      var email = ($('emailInput').value || '').trim();
+      if (!email) {
+        // Fallback if email input is empty for some reason
+        email = tryGetStored('cv_email'); 
+      }
+
+      sb.auth.signInWithPassword({ email: email, password: pw })
+        .then(function(res) {
+          if (res.error) throw new Error('Invalid password. Deletion aborted.');
+          
+          if (!confirm('FINAL WARNING: This will permanently delete "' + c.title + '". Proceed?')) {
+             throw new Error('Deletion cancelled by user.');
+          }
+
+          btn.textContent = 'Purging...';
+          return sb.storage.from(BUCKET).remove([c.file_path]);
+        })
+        .then(function(res) {
+          if (res.error) throw res.error;
+          return sb.from('certs').delete().eq('id', c.id);
+        })
+        .then(function(res) {
+          if (res.error) throw res.error;
+          closeModal();
+          showToast('Record purged successfully');
+          loadCerts();
+        })
+        .catch(function(e) {
+          showToast(e.message, true);
+        })
+        .finally(function() {
+          btn.disabled = false;
+          btn.textContent = oldText;
+        });
     };
   }
 
@@ -1066,8 +1105,10 @@
 
     var savedUrl = tryGetStored('cv_url');
     var savedKey = tryGetStored('cv_key');
+    var savedEmail = tryGetStored('cv_email');
     if (savedUrl) { $('cfgUrl').value = savedUrl; $('rememberConfig').checked = true; }
     if (savedKey) $('cfgKey').value = savedKey;
+    if (savedEmail) $('emailInput').value = savedEmail;
 
     var token = sessionStorage.getItem('cv_token');
     if (token && savedUrl && savedKey) {
