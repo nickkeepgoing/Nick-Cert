@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,338 +9,234 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Kanit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg-deep: #05070a;
-    --bg-main: #0c0f16;
-    --bg-card: #161b22;
-    --bg-card-hover: #1c2128;
-    --border: #30363d;
-    --border-hi: #484f58;
-    
-    --accent: #4f46e5;         /* Premium Indigo */
-    --accent-glow: rgba(79, 70, 229, 0.25);
-    --accent-soft: rgba(79, 70, 229, 0.1);
-    
-    --success: #10b981;
-    --error: #ef4444;
-    --warning: #f59e0b;
-    --info: #3b82f6;
-    
-    --text-primary: #f0f6fc;
-    --text-secondary: #8b949e;
-    --text-muted: #6e7681;
-
-    --font-sans: 'Inter', 'Kanit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    --font-mono: 'JetBrains Mono', monospace;
-    
-    --radius-sm: 8px;
-    --radius-md: 14px;
-    --radius-lg: 24px;
-    
-    --shadow-sm: 0 1px 2px rgba(0,0,0,0.1);
-    --shadow-md: 0 8px 24px rgba(0,0,0,0.3);
-    --shadow-lg: 0 16px 48px rgba(0,0,0,0.5);
-    --shadow-accent: 0 0 30px rgba(79, 70, 229, 0.25);
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: var(--font-sans);
-    background-color: var(--bg-deep);
-    background-image: 
-      radial-gradient(circle at 0% 0%, rgba(79, 70, 229, 0.1) 0%, transparent 40%),
-      radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.08) 0%, transparent 40%);
-    background-attachment: fixed;
-    min-height: 100vh;
-    padding: 60px 20px;
-    color: var(--text-primary);
-    font-size: 16px;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  .container { max-width: 1040px; margin: 0 auto; }
-
-  /* ============ UI COMPONENTS ============ */
-  .glass {
-    background: rgba(22, 27, 34, 0.7);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid var(--border);
-    box-shadow: var(--shadow-md);
-  }
-
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    padding: 12px 24px;
-    border-radius: var(--radius-sm);
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    border: none;
-    text-decoration: none;
-  }
-  .btn-primary { background: var(--accent); color: white; }
-  .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: var(--shadow-accent); filter: brightness(1.1); }
-  .btn-ghost { background: rgba(255,255,255,0.05); color: var(--text-primary); border: 1px solid var(--border); }
-  .btn-ghost:hover { background: rgba(255,255,255,0.1); border-color: var(--text-secondary); }
-  .btn-danger { background: rgba(239, 68, 68, 0.1); color: var(--error); border: 1px solid rgba(239, 68, 68, 0.2); }
-  .btn-danger:hover { background: var(--error); color: white; }
-
-  .input {
-    width: 100%;
-    padding: 12px 16px;
-    background: rgba(0,0,0,0.2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    color: var(--text-primary);
-    font-size: 15px;
-    transition: all 0.2s;
-  }
-  .input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
-
-  /* ============ TOP BAR ============ */
-  .top-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 14px 28px;
-    border-radius: var(--radius-md);
-    margin-bottom: 40px;
-  }
-  .status-tag { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--text-secondary); font-weight: 500; }
-  .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); box-shadow: 0 0 8px var(--success); }
-
-  /* ============ HEADER ============ */
-  .app-header { margin-bottom: 60px; text-align: center; }
-  .app-header h1 { font-size: 3.5rem; font-weight: 800; letter-spacing: -0.05em; margin-bottom: 16px; color: #fff; }
-  .app-header h1 span { background: linear-gradient(135deg, var(--accent) 0%, #818cf8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-  .app-header p { color: var(--text-secondary); font-size: 20px; font-weight: 400; max-width: 600px; margin: 0 auto; }
-
-  /* ============ STATS ============ */
-  .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 48px; }
-  .stat-card { padding: 32px; border-radius: var(--radius-lg); text-align: center; transition: all 0.3s ease; }
-  .stat-card:hover { transform: translateY(-5px); border-color: var(--accent); }
-  .stat-card .label { color: var(--text-muted); font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; }
-  .stat-card .value { font-size: 3rem; font-weight: 800; color: #fff; line-height: 1; }
-
-  /* ============ SECTION CARDS ============ */
-  .section-card { padding: 40px; border-radius: var(--radius-lg); margin-bottom: 40px; }
-  .section-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 32px; display: flex; align-items: center; gap: 16px; }
-  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-
-  /* ============ UPLOAD AREA ============ */
-  .drop-zone {
-    border: 2px dashed var(--border);
-    border-radius: var(--radius-md);
-    padding: 60px 20px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-bottom: 32px;
-  }
-  .drop-zone:hover, .drop-zone.active { border-color: var(--accent); background: var(--accent-soft); }
-  .drop-zone .icon { font-size: 3rem; margin-bottom: 20px; color: var(--accent); }
-  .drop-zone .text { font-size: 18px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; }
-  .drop-zone .hint { color: var(--text-muted); font-size: 14px; }
-
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
-  .form-group { display: flex; flex-direction: column; gap: 10px; }
-  .label { font-size: 14px; font-weight: 600; color: var(--text-secondary); }
-
-  /* ============ GRID ============ */
-  .cert-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 32px; }
-  .cert-item { border-radius: var(--radius-md); overflow: hidden; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-  .cert-item:hover { transform: translateY(-10px); border-color: var(--accent); box-shadow: var(--shadow-lg), var(--shadow-accent); }
-  
-  .preview-box { height: 220px; background: #000; position: relative; border-bottom: 1px solid var(--border); overflow: hidden; }
-  .preview-box img, .preview-box canvas { width: 100%; height: 100%; object-fit: cover; opacity: 0.9; transition: all 0.5s ease; }
-  .cert-item:hover .preview-box img, .cert-item:hover .preview-box canvas { opacity: 1; transform: scale(1.05); }
-  
-  .badge { position: absolute; top: 16px; right: 16px; padding: 6px 12px; background: rgba(0,0,0,0.7); border-radius: var(--radius-sm); font-size: 12px; font-weight: 800; color: #fff; backdrop-filter: blur(4px); }
-  
-  .cert-content { padding: 24px; }
-  .cert-name { font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; color: #fff; }
-  .cert-org { font-size: 14px; color: var(--text-secondary); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
-  .category-tag { display: inline-block; padding: 5px 14px; background: var(--accent-soft); color: #a5b4fc; border-radius: 100px; font-size: 12px; font-weight: 600; }
-
-  /* ============ LOGIN ============ */
-  .auth-card { max-width: 440px; margin: 60px auto; padding: 50px; text-align: center; border-radius: var(--radius-lg); }
-  .auth-logo { width: 72px; height: 72px; background: var(--accent); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 32px; font-size: 2.5rem; color: #fff; box-shadow: var(--shadow-accent); }
-  .auth-card h2 { font-size: 2rem; font-weight: 800; margin-bottom: 12px; }
-  .auth-card p { color: var(--text-secondary); margin-bottom: 40px; }
-
-  /* ============ MODAL ============ */
-  .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(12px); z-index: 1000; padding: 40px; align-items: center; justify-content: center; animation: fadeIn 0.3s ease; }
-  .modal.open { display: flex; }
-  .modal-inner { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); width: 100%; max-width: 960px; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-lg); }
-  .modal-head { padding: 32px 40px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-  .modal-head h3 { font-size: 1.75rem; font-weight: 800; }
-  .modal-body { padding: 40px; }
-  .preview-large { width: 100%; border-radius: var(--radius-md); box-shadow: var(--shadow-md); margin-bottom: 32px; display: block; }
-  .preview-iframe { width: 100%; height: 640px; border-radius: var(--radius-md); border: 1px solid var(--border); margin-bottom: 32px; }
-  
-  .details-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; background: rgba(0,0,0,0.2); padding: 32px; border-radius: var(--radius-md); }
-  .detail-item .k { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
-  .detail-item .v { font-size: 16px; color: #fff; font-weight: 500; }
-
-  /* ============ TOAST ============ */
-  .toast { position: fixed; top: 32px; left: 50%; transform: translateX(-50%) translateY(-20px); padding: 16px 32px; border-radius: var(--radius-md); font-weight: 600; font-size: 15px; z-index: 2000; opacity: 0; transition: all 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28); }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-  .toast-success { background: var(--bg-card); border: 1px solid var(--success); color: var(--success); box-shadow: 0 8px 24px rgba(16, 185, 129, 0.2); }
-  .toast-error { background: var(--bg-card); border: 1px solid var(--error); color: var(--error); box-shadow: 0 8px 24px rgba(239, 68, 68, 0.2); }
-
-  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-  
-  @media (max-width: 800px) {
-    .stats-grid, .form-row, .details-grid { grid-template-columns: 1fr; }
-    .app-header h1 { font-size: 2.5rem; }
-    .auth-card { padding: 30px; }
-  }
-</style>
+<link rel="stylesheet" href="index.css">
 </head>
 <body>
 
 <!-- ============ AUTHENTICATION ============ -->
 <div id="loginScreen">
-  <div class="auth-card glass">
+  <div class="auth-card glass-panel">
     <div class="auth-logo">◈</div>
     <h2>CertVault</h2>
     <p>Secure Certificate Management</p>
 
-    <div id="configSection" style="text-align: left; margin-bottom: 32px;">
-      <div class="form-group" style="margin-bottom: 20px;">
-        <label class="label">Supabase Endpoint</label>
+    <div id="configSection">
+      <div class="form-group">
+        <label>Supabase Endpoint</label>
         <input type="text" id="cfgUrl" class="input" placeholder="https://xxxx.supabase.co">
       </div>
       <div class="form-group">
-        <label class="label">Public Anon Key</label>
+        <label>Public Anon Key</label>
         <input type="password" id="cfgKey" class="input" placeholder="your-publishable-key">
       </div>
-      <label style="display: flex; align-items: center; gap: 12px; margin-top: 16px; color: var(--text-secondary); cursor: pointer; font-size: 14px;">
-        <input type="checkbox" id="rememberConfig" style="width: 18px; height: 18px; accent-color: var(--accent);">
+      <label style="display: flex; align-items: center; gap: 10px; margin-top: 12px; color: var(--text-secondary); cursor: pointer; font-size: 13px;">
+        <input type="checkbox" id="rememberConfig">
         Store configuration locally
       </label>
     </div>
 
-    <div style="text-align: left; margin-bottom: 32px; border-top: 1px solid var(--border); padding-top: 32px;">
-      <div class="form-group" style="margin-bottom: 20px;">
-        <label class="label">Email Address</label>
-        <input type="text" id="emailInput" class="input" placeholder="alex@example.com">
-      </div>
-      <div class="form-group">
-        <label class="label">Security Password</label>
-        <input type="password" id="passwordInput" class="input" placeholder="••••••••">
-      </div>
+    <div class="auth-divider"></div>
+
+    <div class="form-group">
+      <label>Email Address</label>
+      <input type="text" id="emailInput" class="input" placeholder="alex@example.com">
+    </div>
+    <div class="form-group">
+      <label>Security Password</label>
+      <input type="password" id="passwordInput" class="input" placeholder="••••••••">
     </div>
 
-    <button id="loginBtn" class="btn btn-primary" style="width: 100%; padding: 16px;">Sign in to Archive</button>
+    <button id="loginBtn" class="btn btn-primary" style="width: 100%; padding: 14px; margin-top: 12px;">Sign in to Archive</button>
   </div>
 </div>
 
 <!-- ============ DASHBOARD ============ -->
-<div id="mainApp" class="container" style="display: none;">
-  <div class="top-nav glass">
-    <div class="status-tag">
-      <span class="status-dot"></span>
-      <span>Connection Secure</span>
-      <span style="color: var(--border);">|</span>
-      <span>Primary Vault</span>
+<div id="mainApp" class="dashboard-layout" style="display: none;">
+  <!-- Desktop Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <span class="brand-logo">◈</span>
+      <span class="brand-name">CertVault</span>
     </div>
-    <button id="logoutBtn" class="btn btn-ghost" style="padding: 8px 16px; font-size: 13px;">Sign Out</button>
-  </div>
-
-  <header class="app-header">
-    <h1>Cert<span>Vault</span></h1>
-    <p>A high-performance, encrypted storage solution for your professional certifications and academic honors.</p>
-  </header>
-
-  <div class="stats-grid">
-    <div class="stat-card glass">
-      <div class="label">Total Records</div>
-      <div class="value" id="statTotal">00</div>
-    </div>
-    <div class="stat-card glass">
-      <div class="label">Earned YTD</div>
-      <div class="value" id="statYear">00</div>
-    </div>
-    <div class="stat-card glass">
-      <div class="label">Specializations</div>
-      <div class="value" id="statCat">00</div>
-    </div>
-  </div>
-
-  <div class="section-card glass">
-    <h2 class="section-title">Ingest New Record</h2>
-    <label class="drop-zone" id="uploadArea" for="fileInput">
-      <div class="icon">󰉈</div>
-      <div class="text">Push to Vault</div>
-      <div class="hint">Upload PDF, JPG, or PNG up to 50MB</div>
-      <input type="file" id="fileInput" accept=".pdf,image/*">
-    </label>
-    <div id="fileName" style="margin-bottom: 24px; color: var(--info); font-weight: 600; display: none;"></div>
     
-    <div class="form-row">
-      <div class="form-group">
-        <label class="label">Credential Name</label>
-        <input type="text" id="certTitle" class="input" placeholder="e.g. Certified Security Professional">
-      </div>
-      <div class="form-group">
-        <label class="label">Issuing Authority</label>
-        <input type="text" id="certIssuer" class="input" placeholder="e.g. Global Tech Institute">
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="label">Achievement Date</label>
-        <input type="date" id="certDate" class="input">
-      </div>
-      <div class="form-group">
-        <label class="label">Classification</label>
-        <select id="certCategory" class="input">
-          <option value="">Unclassified</option>
-          <option value="IT">Information Technology</option>
-          <option value="Security">Cyber Security</option>
-          <option value="Language">Linguistics</option>
-          <option value="Training">Professional Development</option>
-          <option value="Education">Academic Education</option>
-          <option value="Award">Awards & Honors</option>
-          <option value="Other">Miscellaneous</option>
-        </select>
-      </div>
-    </div>
-    <button id="saveBtn" class="btn btn-primary" style="min-width: 240px;">Commit to Storage</button>
-    
-    <div id="progress" style="margin-top: 24px; height: 6px; background: var(--bg-deep); border-radius: 10px; overflow: hidden; display: none;">
-      <div id="progressBar" style="height: 100%; background: var(--accent); width: 0%; transition: width 0.4s ease;"></div>
-    </div>
-  </div>
-
-  <div class="section-card glass">
-    <h2 class="section-title">Vault Explorer</h2>
-    <div class="toolbar">
-      <input type="text" id="searchBox" class="input" style="flex: 2; min-width: 300px;" placeholder="Search by name, organization, or category...">
-      <select id="filterCat" class="input" style="flex: 1; min-width: 200px;">
-        <option value="">All Categories</option>
-      </select>
-      <select id="sortBy" class="input" style="flex: 1; min-width: 200px;">
-        <option value="date_desc">Chronological (Newest)</option>
-        <option value="date_asc">Chronological (Oldest)</option>
-        <option value="title">Lexicographical (A-Z)</option>
-      </select>
-      <button id="btnExport" class="btn btn-ghost" style="padding: 10px 20px; white-space: nowrap;">
-        <span style="font-size: 1.2rem;">󰒔</span> Export CSV
+    <nav class="sidebar-nav">
+      <button class="nav-item active" data-tab="overview">
+        <span class="nav-icon">📊</span>
+        <span class="nav-text">Overview</span>
       </button>
+      <button class="nav-item" data-tab="explorer">
+        <span class="nav-icon">🔍</span>
+        <span class="nav-text">Vault Explorer</span>
+      </button>
+      <button class="nav-item" data-tab="ingest">
+        <span class="nav-icon">📤</span>
+        <span class="nav-text">Ingest Record</span>
+      </button>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <div class="status-tag">
+        <span class="status-dot"></span>
+        <span>Secure Connection</span>
+      </div>
+      <button id="logoutBtn" class="btn btn-logout">Sign Out</button>
     </div>
+  </aside>
 
-    <div id="certList" class="cert-grid"></div>
-  </div>
+  <!-- Mobile Bottom Nav Bar -->
+  <nav class="mobile-bottom-nav">
+    <button class="mobile-nav-item active" data-tab="overview">
+      <span class="mobile-nav-icon">📊</span>
+      <span>Overview</span>
+    </button>
+    <button class="mobile-nav-item" data-tab="explorer">
+      <span class="mobile-nav-icon">🔍</span>
+      <span>Explorer</span>
+    </button>
+    <button class="mobile-nav-item" data-tab="ingest">
+      <span class="mobile-nav-icon">📤</span>
+      <span>Ingest</span>
+    </button>
+    <button id="logoutBtnMobile" class="mobile-nav-item" style="color: var(--error);">
+      <span class="mobile-nav-icon">🚪</span>
+      <span>Sign Out</span>
+    </button>
+  </nav>
+
+  <!-- Main Content Area -->
+  <main class="main-content">
+    <header class="top-nav-bar">
+      <div class="header-title">
+        <h1 id="pageTitle">Overview</h1>
+        <p id="pageSubtitle">Welcome to your secure credential archive.</p>
+      </div>
+      <div class="header-actions">
+        <span class="badge" style="position: static; background: var(--accent-soft); border-color: rgba(99, 102, 241, 0.2); color: #a5b4fc; padding: 6px 12px; font-size: 11px;">Primary Vault</span>
+      </div>
+    </header>
+
+    <div class="content-body">
+      <!-- Section: Overview -->
+      <section id="tab-overview" class="tab-panel active">
+        <!-- Stats -->
+        <div class="stats-grid">
+          <div class="stat-card glass-panel">
+            <div class="label">Total Records</div>
+            <div class="value" id="statTotal">00</div>
+          </div>
+          <div class="stat-card glass-panel">
+            <div class="label">Earned YTD</div>
+            <div class="value" id="statYear">00</div>
+          </div>
+          <div class="stat-card glass-panel">
+            <div class="label">Specializations</div>
+            <div class="value" id="statCat">00</div>
+          </div>
+        </div>
+        
+        <!-- Overview Content Grid -->
+        <div class="overview-grid">
+          <!-- Recent Certificates List -->
+          <div class="section-box glass-panel">
+            <div class="section-box-title">
+              <span>Recent Credentials</span>
+              <button class="btn btn-ghost" style="padding: 4px 10px; font-size: 11px;" onclick="switchTab('explorer')">View All</button>
+            </div>
+            <div id="recentList" class="recent-list"></div>
+          </div>
+
+          <!-- Quick Action Card -->
+          <div class="section-box glass-panel" style="display: flex; flex-direction: column; justify-content: space-between;">
+            <div class="section-box-title">
+              <span>Quick Actions</span>
+            </div>
+            <div class="quick-upload-card" onclick="switchTab('ingest')">
+              <div class="quick-upload-icon">📤</div>
+              <div class="quick-upload-text">Upload New Certificate</div>
+              <div class="quick-upload-hint">Drag & drop or browse files</div>
+            </div>
+            <div style="margin-top: 16px; font-size: 12px; color: var(--text-secondary); line-height: 1.6;">
+              CertVault secures and indexes your digital professional credentials with high-performance encryption.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Vault Explorer -->
+      <section id="tab-explorer" class="tab-panel">
+        <div class="toolbar">
+          <div class="toolbar-search">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="searchBox" class="input" placeholder="Search by name, issuer, or category...">
+          </div>
+          <select id="filterCat" class="input">
+            <option value="">All Categories</option>
+          </select>
+          <select id="sortBy" class="input">
+            <option value="date_desc">Chronological (Newest)</option>
+            <option value="date_asc">Chronological (Oldest)</option>
+            <option value="title">Lexicographical (A-Z)</option>
+          </select>
+          <button id="btnExport" class="btn btn-ghost">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-right:4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Export CSV
+          </button>
+        </div>
+
+        <div id="certList" class="cert-grid"></div>
+      </section>
+
+      <!-- Section: Ingest Record -->
+      <section id="tab-ingest" class="tab-panel">
+        <div class="form-card glass-panel" style="padding: 32px;">
+          <label class="drop-zone" id="uploadArea" for="fileInput">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <div class="text">Push to Vault</div>
+            <div class="hint">Upload PDF, JPG, or PNG up to 50MB</div>
+            <input type="file" id="fileInput" accept=".pdf,image/*" style="display: none;">
+          </label>
+          <div id="fileName" style="display: none;"></div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label>Credential Name</label>
+              <input type="text" id="certTitle" class="input" placeholder="e.g. Certified Security Professional">
+            </div>
+            <div class="form-group">
+              <label>Issuing Authority</label>
+              <input type="text" id="certIssuer" class="input" placeholder="e.g. Global Tech Institute">
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label>Achievement Date</label>
+              <input type="date" id="certDate" class="input">
+            </div>
+            <div class="form-group">
+              <label>Classification</label>
+              <select id="certCategory" class="input">
+                <option value="">Unclassified</option>
+                <option value="IT">Information Technology</option>
+                <option value="Security">Cyber Security</option>
+                <option value="Language">Linguistics</option>
+                <option value="Training">Professional Development</option>
+                <option value="Education">Academic Education</option>
+                <option value="Award">Awards & Honors</option>
+                <option value="Other">Miscellaneous</option>
+              </select>
+            </div>
+          </div>
+          
+          <button id="saveBtn" class="btn btn-primary" style="min-width: 200px; padding: 12px 24px;">Commit to Storage</button>
+          
+          <div id="progress" style="display: none;">
+            <div id="progressBar" style="height: 100%; background: var(--accent); width: 0%; transition: width 0.4s ease;"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
 </div>
 
 <!-- ============ MODAL ============ -->
@@ -348,21 +244,27 @@
   <div class="modal-inner">
     <div class="modal-head">
       <h3 id="modalTitle">Record Details</h3>
-      <button id="closeBtn" class="btn btn-ghost" style="padding: 8px 16px;">Close</button>
+      <button id="closeBtn" class="btn btn-ghost">Close</button>
     </div>
     <div class="modal-body">
-      <div id="modalBody"></div>
-      <div class="details-grid">
-        <div class="detail-item"><div class="k">Issuer</div><div class="v" id="detIssuer"></div></div>
-        <div class="detail-item"><div class="k">Date</div><div class="v" id="detDate"></div></div>
-        <div class="detail-item"><div class="k">Category</div><div class="v" id="detCat"></div></div>
-        <div class="detail-item"><div class="k">Identifier</div><div class="v" id="detFile"></div></div>
-      </div>
-      <div style="display: flex; gap: 16px; margin-top: 40px;">
-        <button id="btnDownload" class="btn btn-primary">Download Document</button>
-        <button id="btnCopy" class="btn btn-ghost">Copy Access Link</button>
-        <div style="flex: 1;"></div>
-        <button id="btnDel" class="btn btn-danger">Purge Record</button>
+      <div class="modal-content-grid">
+        <div class="preview-container" id="modalBody"></div>
+        <div class="details-panel">
+          <div class="details-grid">
+            <div class="detail-item"><div class="k">Issuer</div><div class="v" id="detIssuer"></div></div>
+            <div class="detail-item"><div class="k">Date</div><div class="v" id="detDate"></div></div>
+            <div class="detail-item"><div class="k">Category</div><div class="v" id="detCat"></div></div>
+            <div class="detail-item"><div class="k">Identifier</div><div class="v" id="detFile"></div></div>
+          </div>
+          <div class="modal-actions">
+            <button id="btnDownload" class="btn btn-primary">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download
+            </button>
+            <button id="btnCopy" class="btn btn-ghost">Copy Link</button>
+            <button id="btnDel" class="btn btn-danger">Purge Record</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -406,6 +308,54 @@
       return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[m];
     });
   }
+
+  function formatDate(d) {
+    if (!d) return '';
+    var parts = d.split('-');
+    if (parts.length !== 3) return d;
+    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    var yr = parts[0];
+    var mo = parseInt(parts[1], 10) - 1;
+    var dy = parseInt(parts[2], 10);
+    if (mo >= 0 && mo < 12) {
+      return dy + ' ' + months[mo] + ' ' + yr;
+    }
+    return d;
+  }
+
+  function switchTab(tabId) {
+    var panels = document.querySelectorAll('.tab-panel');
+    panels.forEach(function(panel) { panel.classList.remove('active'); });
+
+    var activePanel = $('tab-' + tabId);
+    if (activePanel) activePanel.classList.add('active');
+
+    var allNavs = document.querySelectorAll('.nav-item, .mobile-nav-item');
+    allNavs.forEach(function(item) {
+      if (item.getAttribute('data-tab') === tabId) {
+        item.classList.add('active');
+      } else {
+        item.classList.remove('active');
+      }
+    });
+
+    var titleEl = $('pageTitle');
+    var subtitleEl = $('pageSubtitle');
+    if (titleEl && subtitleEl) {
+      if (tabId === 'overview') {
+        titleEl.textContent = 'Overview';
+        subtitleEl.textContent = 'Welcome to your secure credential archive.';
+      } else if (tabId === 'explorer') {
+        titleEl.textContent = 'Vault Explorer';
+        subtitleEl.textContent = 'Search and view your credentials.';
+      } else if (tabId === 'ingest') {
+        titleEl.textContent = 'Ingest New Record';
+        subtitleEl.textContent = 'Upload files and input certificate metadata.';
+      }
+    }
+  }
+
+  window.switchTab = switchTab;
 
   function login() {
     var now = Date.now();
@@ -473,9 +423,10 @@
 
   function showApp(supabaseClient) {
     $('loginScreen').style.display = 'none';
-    $('mainApp').style.display = 'block';
+    $('mainApp').style.display = 'grid';
     sb = supabaseClient;
     loadCerts();
+    switchTab('overview');
   }
 
   function tryGetStored(key) {
@@ -639,31 +590,76 @@
 
     var list = $('certList');
     if (filtered.length === 0) {
-      list.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding: 60px; color: var(--text-muted);">No records found matching your criteria.</div>';
-      return;
+      list.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding: 60px; color: var(--text-muted); font-size: 14px;">No records found matching your criteria.</div>';
+    } else {
+      list.innerHTML = filtered.map(function(c) {
+        var isImg = c.file_type && c.file_type.indexOf('image/') === 0;
+        var isPdf = c.file_type === 'application/pdf' || (c.file_name && c.file_name.toLowerCase().endsWith('.pdf'));
+        var url = getPublicUrl(c.file_path);
+        var preview, badge = '';
+        if (isImg) { preview = '<img src="' + url + '" loading="lazy">'; badge = '<div class="badge">IMAGE</div>'; }
+        else if (isPdf) { preview = '<canvas data-pdf-url="' + escapeHtml(url) + '"></canvas>'; badge = '<div class="badge">PDF</div>'; }
+        else { preview = '<div style="font-size:3rem;">📄</div>'; }
+
+        var tagClass = 'tag-other';
+        if (c.category) {
+          var catLower = c.category.toLowerCase();
+          if (catLower === 'it' || catLower.indexOf('information') !== -1) tagClass = 'tag-it';
+          else if (catLower === 'security' || catLower.indexOf('cyber') !== -1) tagClass = 'tag-security';
+          else if (catLower === 'language' || catLower.indexOf('ling') !== -1) tagClass = 'tag-language';
+          else if (catLower === 'training' || catLower.indexOf('dev') !== -1) tagClass = 'tag-training';
+          else if (catLower === 'education' || catLower.indexOf('acad') !== -1) tagClass = 'tag-education';
+          else if (catLower === 'award' || catLower.indexOf('honor') !== -1) tagClass = 'tag-award';
+        }
+
+        var formattedDate = c.issued_date ? formatDate(c.issued_date) : 'No Date';
+
+        var issuerSvg = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-right:4px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>';
+        var calendarSvg = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-right:4px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>';
+
+        return '<div class="cert-item glass-panel" data-id="' + c.id + '">' +
+          '<div class="preview-box">' + preview + badge + '</div>' +
+          '<div class="cert-content">' +
+            '<div class="cert-name">' + escapeHtml(c.title) + '</div>' +
+            '<div class="cert-org">' + issuerSvg + escapeHtml(c.issuer || 'Unknown Authority') + '</div>' +
+            '<div class="cert-footer">' +
+              '<span class="cert-date">' + calendarSvg + formattedDate + '</span>' +
+              (c.category ? '<span class="category-tag ' + tagClass + '">' + escapeHtml(c.category) + '</span>' : '') +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+
+      list.querySelectorAll('.cert-item').forEach(function(el) { el.onclick = function() { openCert(el.dataset.id); }; });
+      list.querySelectorAll('canvas[data-pdf-url]').forEach(function(cv) { renderPdfThumbnail(cv.dataset.pdfUrl, cv); });
     }
 
-    list.innerHTML = filtered.map(function(c) {
-      var isImg = c.file_type && c.file_type.indexOf('image/') === 0;
-      var isPdf = c.file_type === 'application/pdf' || (c.file_name && c.file_name.toLowerCase().endsWith('.pdf'));
-      var url = getPublicUrl(c.file_path);
-      var preview, badge = '';
-      if (isImg) { preview = '<img src="' + url + '" loading="lazy">'; badge = '<div class="badge">IMAGE</div>'; }
-      else if (isPdf) { preview = '<canvas data-pdf-url="' + escapeHtml(url) + '"></canvas>'; badge = '<div class="badge">PDF</div>'; }
-      else { preview = '<div style="font-size:3rem;">📄</div>'; }
+    // Render Recent List on Overview
+    var recentList = $('recentList');
+    if (recentList) {
+      var recents = certs.slice(0, 3);
+      if (recents.length === 0) {
+        recentList.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text-muted); font-size: 13px;">No recent records.</div>';
+      } else {
+        recentList.innerHTML = recents.map(function(c) {
+          var isPdf = c.file_type === 'application/pdf' || (c.file_name && c.file_name.toLowerCase().endsWith('.pdf'));
+          var icon = isPdf ? '📄' : '🖼️';
+          var dateStr = c.issued_date ? formatDate(c.issued_date) : 'N/A';
+          return '<div class="recent-item" data-id="' + c.id + '">' +
+            '<div class="recent-icon">' + icon + '</div>' +
+            '<div class="recent-details">' +
+              '<div class="recent-name">' + escapeHtml(c.title) + '</div>' +
+              '<div class="recent-meta">' + escapeHtml(c.issuer || 'Unknown Authority') + ' • ' + dateStr + '</div>' +
+            '</div>' +
+            '<div class="recent-action">→</div>' +
+          '</div>';
+        }).join('');
 
-      return '<div class="cert-item glass" data-id="' + c.id + '">' +
-        '<div class="preview-box">' + preview + badge + '</div>' +
-        '<div class="cert-content">' +
-          '<div class="cert-name">' + escapeHtml(c.title) + '</div>' +
-          '<div class="cert-org">' + escapeHtml(c.issuer || 'Unknown Authority') + '</div>' +
-          (c.category ? '<span class="category-tag">' + escapeHtml(c.category) + '</span>' : '') +
-        '</div>' +
-      '</div>';
-    }).join('');
-
-    list.querySelectorAll('.cert-item').forEach(function(el) { el.onclick = function() { openCert(el.dataset.id); }; });
-    list.querySelectorAll('canvas[data-pdf-url]').forEach(function(cv) { renderPdfThumbnail(cv.dataset.pdfUrl, cv); });
+        recentList.querySelectorAll('.recent-item').forEach(function(el) {
+          el.onclick = function() { openCert(el.dataset.id); };
+        });
+      }
+    }
   }
 
   function openCert(id) {
@@ -676,7 +672,7 @@
     $('modalTitle').textContent = c.title;
     $('modalBody').innerHTML = preview;
     $('detIssuer').textContent = c.issuer || 'N/A';
-    $('detDate').textContent = c.issued_date || 'N/A';
+    $('detDate').textContent = c.issued_date ? formatDate(c.issued_date) : 'N/A';
     $('detCat').textContent = c.category || 'Unclassified';
     $('detFile').textContent = c.file_name;
 
@@ -713,7 +709,6 @@
     });
 
     var csvContent = headers.join(',') + '\n' + rows.map(e => e.join(',')).join('\n');
-    // Add BOM for Excel UTF-8 support
     var blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
     var link = document.createElement('a');
     var url = URL.createObjectURL(blob);
@@ -729,6 +724,7 @@
   function init() {
     $('loginBtn').onclick = login;
     $('logoutBtn').onclick = logout;
+    if ($('logoutBtnMobile')) $('logoutBtnMobile').onclick = logout;
     $('saveBtn').onclick = saveCert;
     $('btnExport').onclick = exportToCSV;
     $('closeBtn').onclick = closeModal;
@@ -740,6 +736,16 @@
     $('uploadArea').ondragleave = function() { this.classList.remove('active'); };
     $('uploadArea').ondrop = function(e) { e.preventDefault(); this.classList.remove('active'); if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]); };
     window.onclick = function(e) { if (e.target.id === 'modal') closeModal(); };
+
+    // Setup tab navigation
+    var tabBtns = document.querySelectorAll('.nav-item, .mobile-nav-item');
+    tabBtns.forEach(function(btn) {
+      if (btn.id === 'logoutBtnMobile') return;
+      btn.onclick = function() {
+        var tabId = btn.getAttribute('data-tab');
+        if (tabId) switchTab(tabId);
+      };
+    });
 
     var savedUrl = tryGetStored('cv_url');
     var savedKey = tryGetStored('cv_key');
