@@ -1,7 +1,6 @@
 # ◈ CERT_VAULT
 
-> Personal certificate archive — powered by Supabase · no secrets in source code
-
+> Personal certificate collection with simple one file.
 ---
 
 ## 📋 Overview
