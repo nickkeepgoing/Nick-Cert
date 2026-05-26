@@ -6,6 +6,8 @@
 <title>CertVault // Professional Certificate Archive</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Kanit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -201,6 +203,10 @@
           <button id="btnExport" class="btn btn-ghost">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-right:4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             Export CSV
+          </button>
+          <button id="btnDownloadAll" class="btn btn-ghost">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-right:4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download All (ZIP)
           </button>
         </div>
 
@@ -1075,12 +1081,64 @@
     showToast('Exported certificate list');
   }
 
+  function downloadAllAsZip() {
+    if (certs.length === 0) { showToast('No data to download', true); return; }
+
+    var btn = $('btnDownloadAll');
+    var oldText = btn.innerHTML;
+    btn.disabled = true;
+    btn.textContent = 'Initializing ZIP...';
+
+    var zip = new JSZip();
+    var folder = zip.folder("certificates");
+    var processed = 0;
+
+    var promises = certs.map(function(c) {
+      var url = getPublicUrl(c.file_path);
+      return fetch(url)
+        .then(function(res) { if (!res.ok) throw new Error('Failed to fetch ' + c.file_name); return res.blob(); })
+        .then(function(blob) {
+          // Use a unique name within the zip to avoid collisions
+          var fileName = c.file_name;
+          // If name is missing or generic, use title
+          if (!fileName || fileName === 'file') {
+             var ext = c.file_type === 'application/pdf' ? 'pdf' : 'jpg';
+             fileName = c.title.replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.' + ext;
+          }
+          folder.file(fileName, blob);
+          processed++;
+          btn.textContent = 'Zipping (' + processed + '/' + certs.length + ')...';
+        })
+        .catch(function(err) {
+          console.error(err);
+        });
+    });
+
+    Promise.all(promises)
+      .then(function() {
+        btn.textContent = 'Generating archive...';
+        return zip.generateAsync({ type: "blob" });
+      })
+      .then(function(content) {
+        saveAs(content, "CertVault_Archive_" + new Date().toISOString().split('T')[0] + ".zip");
+        showToast('Download started');
+      })
+      .catch(function(err) {
+        showToast('Error: ' + err.message, true);
+      })
+      .finally(function() {
+        btn.disabled = false;
+        btn.innerHTML = oldText;
+      });
+  }
+
   function init() {
     $('loginBtn').onclick = login;
     $('logoutBtn').onclick = logout;
     if ($('logoutBtnMobile')) $('logoutBtnMobile').onclick = logout;
     $('saveBtn').onclick = saveCert;
     $('btnExport').onclick = exportToCSV;
+    if ($('btnDownloadAll')) $('btnDownloadAll').onclick = downloadAllAsZip;
     if ($('btnExportHTML')) $('btnExportHTML').onclick = exportToHTML;
     if ($('quickShareBtn')) $('quickShareBtn').onclick = exportToHTML;
     $('closeBtn').onclick = closeModal;
