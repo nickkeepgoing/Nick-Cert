@@ -297,6 +297,11 @@ input[type="checkbox"] {
   text-shadow: 0 0 15px rgba(159, 239, 0, 0.4);
 }
 
+.brand-logo .lucide {
+  width: 22px;
+  height: 22px;
+}
+
 .brand-name {
   font-size: 18px;
   font-weight: 700;
@@ -348,6 +353,17 @@ input[type="checkbox"] {
   justify-content: center;
   width: 20px;
   height: 20px;
+}
+
+.nav-icon .lucide {
+  width: 18px;
+  height: 18px;
+}
+
+/* Lucide Global Styling */
+.lucide {
+  stroke-width: 2.2px;
+  vertical-align: middle;
 }
 
 .sidebar-footer {
@@ -1248,8 +1264,9 @@ input[type="checkbox"] {
     color: var(--accent);
   }
   
-  .mobile-nav-icon {
-    font-size: 18px;
+  .mobile-nav-icon .lucide {
+    width: 22px;
+    height: 22px;
   }
 }
 
@@ -1301,6 +1318,11 @@ input[type="checkbox"] {
   color: var(--accent);
   margin-bottom: 4px;
   flex-shrink: 0;
+}
+
+.action-card .action-icon .lucide {
+  width: 24px;
+  height: 24px;
 }
 
 .action-card .action-title {
