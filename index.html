@@ -272,7 +272,11 @@
 <div id="modal" class="modal">
   <div class="modal-inner">
     <div class="modal-head">
-      <h3 id="modalTitle">Record Details</h3>
+      <div style="display: flex; align-items: center; gap: 12px; flex-grow: 1;">
+        <h3 id="modalTitle">Record Details</h3>
+        <input type="text" id="editTitle" class="input" style="display: none; font-size: 16px; font-weight: 600;">
+        <button id="btnEdit" class="btn btn-ghost" style="padding: 4px 8px; font-size: 11px;"><i data-lucide="edit-3" style="width: 14px;"></i> Edit</button>
+      </div>
       <button id="closeBtn" class="btn btn-ghost"><i data-lucide="x" style="width: 18px;"></i></button>
     </div>
     <div class="modal-body">
@@ -280,18 +284,48 @@
         <div class="preview-container" id="modalBody"></div>
         <div class="details-panel">
           <div class="details-grid">
-            <div class="detail-item"><div class="k">Issuer</div><div class="v" id="detIssuer"></div></div>
-            <div class="detail-item"><div class="k">Date</div><div class="v" id="detDate"></div></div>
-            <div class="detail-item"><div class="k">Category</div><div class="v" id="detCat"></div></div>
+            <div class="detail-item">
+              <div class="k">Issuer</div>
+              <div class="v" id="detIssuer"></div>
+              <input type="text" id="editIssuer" class="input" style="display: none; margin-top: 4px;">
+            </div>
+            <div class="detail-item">
+              <div class="k">Date</div>
+              <div class="v" id="detDate"></div>
+              <input type="date" id="editDate" class="input" style="display: none; margin-top: 4px;">
+            </div>
+            <div class="detail-item">
+              <div class="k">Category</div>
+              <div class="v" id="detCat"></div>
+              <select id="editCat" class="input" style="display: none; margin-top: 4px;">
+                <option value="">Unclassified</option>
+                <option value="IT">Information Technology</option>
+                <option value="Security">Cyber Security</option>
+                <option value="Language">Linguistics</option>
+                <option value="Training">Professional Development</option>
+                <option value="Education">Academic Education</option>
+                <option value="Award">Awards & Honors</option>
+                <option value="Other">Miscellaneous</option>
+              </select>
+            </div>
             <div class="detail-item"><div class="k">Identifier</div><div class="v" id="detFile"></div></div>
           </div>
           <div class="modal-actions">
-            <button id="btnDownload" class="btn btn-primary">
-              <i data-lucide="download" style="width: 14px;"></i>
-              Download
-            </button>
-            <button id="btnCopy" class="btn btn-ghost"><i data-lucide="copy" style="width: 14px;"></i> Copy Link</button>
-            <button id="btnDel" class="btn btn-danger"><i data-lucide="trash-2" style="width: 14px;"></i> Purge Record</button>
+            <div id="viewActions" style="display: flex; gap: 12px; width: 100%;">
+              <button id="btnDownload" class="btn btn-primary">
+                <i data-lucide="download" style="width: 14px;"></i>
+                Download
+              </button>
+              <button id="btnCopy" class="btn btn-ghost"><i data-lucide="copy" style="width: 14px;"></i> Copy Link</button>
+              <button id="btnDel" class="btn btn-danger"><i data-lucide="trash-2" style="width: 14px;"></i> Purge</button>
+            </div>
+            <div id="editActions" style="display: none; gap: 12px; width: 100%;">
+              <button id="btnSaveEdit" class="btn btn-primary">
+                <i data-lucide="save" style="width: 14px;"></i>
+                Save Changes
+              </button>
+              <button id="btnCancelEdit" class="btn btn-ghost">Cancel</button>
+            </div>
           </div>
         </div>
       </div>
@@ -318,6 +352,8 @@
   var certs = [];
   var pendingFile = null;
   var pdfThumbCache = {};
+  var currentCertId = null;
+  var isEditing = false;
 
   if (window.pdfjsLib) {
     window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -731,6 +767,8 @@
   function openCert(id) {
     var c = certs.find(function(x) { return x.id === id; });
     if (!c) return;
+    currentCertId = id;
+    toggleEditMode(false);
     var url = getPublicUrl(c.file_path);
     var isImg = c.file_type && c.file_type.indexOf('image/') === 0;
     var isPdf = c.file_type === 'application/pdf' || (c.file_name && c.file_name.toLowerCase().endsWith('.pdf'));
@@ -803,7 +841,79 @@
     };
   }
 
-  function closeModal() { $('modal').classList.remove('open'); }
+  function closeModal() { $('modal').classList.remove('open'); currentCertId = null; isEditing = false; }
+
+  function toggleEditMode(enable) {
+    isEditing = enable;
+    
+    var viewEls = ['modalTitle', 'detIssuer', 'detDate', 'detCat', 'viewActions'];
+    var editEls = ['editTitle', 'editIssuer', 'editDate', 'editCat', 'editActions'];
+    var btnEdit = $('btnEdit');
+
+    viewEls.forEach(function(id) {
+      var el = $(id);
+      if (el) el.style.display = enable ? 'none' : 'block';
+    });
+    if (!enable) $('viewActions').style.display = 'flex';
+    
+    editEls.forEach(function(id) {
+      var el = $(id);
+      if (el) el.style.display = enable ? 'block' : 'none';
+    });
+    if (enable) $('editActions').style.display = 'flex';
+    
+    if (btnEdit) btnEdit.style.display = enable ? 'none' : 'block';
+
+    if (enable) {
+      var c = certs.find(function(x) { return x.id === currentCertId; });
+      if (c) {
+        $('editTitle').value = c.title || '';
+        $('editIssuer').value = c.issuer || '';
+        $('editDate').value = c.issued_date || '';
+        $('editCat').value = c.category || '';
+      }
+    }
+    
+    if (window.lucide) window.lucide.createIcons();
+  }
+
+  function saveEdit() {
+    if (!currentCertId) return;
+    
+    var title = $('editTitle').value.trim();
+    if (!title) { showToast('Title is required', true); return; }
+
+    var btn = $('btnSaveEdit');
+    var oldText = btn.innerHTML;
+    btn.disabled = true;
+    btn.textContent = 'Saving...';
+
+    var updates = {
+      title: title,
+      issuer: $('editIssuer').value.trim() || null,
+      issued_date: $('editDate').value || null,
+      category: $('editCat').value || null
+    };
+
+    sb.from('certs').update(updates).eq('id', currentCertId)
+      .then(function(res) {
+        if (res.error) throw res.error;
+        showToast('Record updated successfully');
+        return loadCerts();
+      })
+      .then(function() {
+        toggleEditMode(false);
+        // Refresh view data by re-opening
+        openCert(currentCertId);
+      })
+      .catch(function(e) {
+        showToast(e.message || 'Update failed', true);
+      })
+      .finally(function() {
+        btn.disabled = false;
+        btn.innerHTML = oldText;
+      });
+  }
 
   function getCategoryExplanation(category, title) {
     var titleLower = (title || '').toLowerCase();
@@ -1150,6 +1260,9 @@
     if ($('btnDownloadAll')) $('btnDownloadAll').onclick = downloadAllAsZip;
     if ($('btnExportHTML')) $('btnExportHTML').onclick = exportToHTML;
     if ($('quickShareBtn')) $('quickShareBtn').onclick = exportToHTML;
+    $('btnEdit').onclick = function() { toggleEditMode(true); };
+    $('btnSaveEdit').onclick = saveEdit;
+    $('btnCancelEdit').onclick = function() { toggleEditMode(false); };
     $('closeBtn').onclick = closeModal;
     $('searchBox').oninput = render;
     $('filterCat').onchange = render;
